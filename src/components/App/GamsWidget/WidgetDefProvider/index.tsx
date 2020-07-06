@@ -1,5 +1,6 @@
 import React from "react";
 import { getCurrentPid } from "../../../../utils/gamsUtils";
+import { GamsWidgetType } from "../index"
 import { WidgetDefProviderProps } from ".."
 
 // Extends WidgetDefProviderProps so that additional 
@@ -52,7 +53,13 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
         console.error(err);
       })
     } else {
-      console.error("GamsWidget- WidgetDefProvider: No global window property nor datastream defined for retrieving the widget's definition. Returning dummy-defintion instead. (But the app might crash).");
+      console.error("GamsWidget- WidgetDefProvider: No global window property nor datastream defined for retrieving the widget's definition. Returning dummy-definition instead. (But the app might crash).");
+      let dummyDef: GamsWidgetType  = {
+        name:"Dummy-Test Widget",
+        lifecycle:"develop"        
+      }
+      console.error("Set dummy definition: ", dummyDef);
+      setDefinition(dummyDef);    
     }
 
   }, [setDefinition, globalPropName, datastream]);

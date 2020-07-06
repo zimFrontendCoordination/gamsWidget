@@ -7,7 +7,7 @@ import ExampleWidget from "./GamsWidget/ExampleWidget";
 const App: React.FC = () => {
 
   return <GamsWidget
-    WidgetComponent={{Component: ExampleWidget, props:{exampleProp:" This prop is injected to the <ExampleWidget> "}}}
+    WidgetComponent={{Component: ExampleWidget, props:{exampleProp:" This exampleProp is injected to the <ExampleWidget> from <App>"}}}
     WidgetDefProvider={{Component:WidgetDefProvider}}
     WidgetDataProvider={{Component: DataProvider}}
   ></GamsWidget>
