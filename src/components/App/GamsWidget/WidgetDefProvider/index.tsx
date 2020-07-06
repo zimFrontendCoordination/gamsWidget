@@ -19,7 +19,9 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
   setDefinition = undefined, 
   children = undefined,
   globalPropName,
-  datastream,
+  datastream,     //maybe best to set object reference to "managed content" | "reference" | "x" ? like in cirillo?
+  // or contextObject with datastream?
+  // or service to call
 }) => {
   React.useEffect(() => {
     if (!setDefinition) return;
@@ -27,7 +29,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
     // configured window object validates true
     if(window[globalPropName as any]){
       return setDefinition(window[globalPropName as any]);
-    } else {
+    } else if(datastream) {
     // window object not defined
       // try to fetch for GUI def in datastream
       let curPid = getCurrentPid();
@@ -49,8 +51,8 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
         console.error("Error at getting config data from url: ", requestUrl);
         console.error(err);
       })
-    
-
+    } else {
+      console.warn("GamsWidget- WidgetDefProvider: No global window property nor datastream defined for retrieving the widget's definition. Returning test-data instead.");
     }
 
   }, [setDefinition, globalPropName, datastream]);
