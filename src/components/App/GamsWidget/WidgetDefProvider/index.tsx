@@ -10,14 +10,18 @@ interface GAMSWidgetDefProps extends WidgetDefProviderProps {
   globalPropName?: string;
   datastream?: string;
   objectPidRef?: string;   // if set to undefined -> assuming current object? via datastream?
-                        // widget's that are configured by one specific object?
-                        // like a context object.  
+                           // widget's that are configured by one specific object?
+                           // like a context object.  
 }
 
 /**
- * Component checks if the global config object was assigned and
- * sets state of parent component. (for the configuration)
- * 
+ * Component checks if and where the global config object was assigned and
+ * sets state of parent component. (for the configuration / basal widget definition).
+ * globalProp overwrites datastream -> objectPidRef overwrites default behavior of reqeuesting client's
+ * current object's pid.
+ * @param globalPropName Name of the property of the global window object where the widget definition could be held.
+ * @param datastream Name of datastream where the widget definition could be.
+ * @param objectPidRef Pid of object from where the widget definition should be requested.
  */
 const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
   setDefinition = undefined, 
@@ -69,7 +73,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
       console.error("GamsWidget- WidgetDefProvider: Set dummy definition: ", dummyDef);
       setDefinition(dummyDef);    
     }
-    
+
   }, [setDefinition, globalPropName, datastream, objectPidRef]);
 
   return children ? children : null;
