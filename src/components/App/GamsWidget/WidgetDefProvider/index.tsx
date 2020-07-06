@@ -9,6 +9,9 @@ import { WidgetDefProviderProps } from ".."
 interface GAMSWidgetDefProps extends WidgetDefProviderProps {
   globalPropName?: string;
   datastream?: string;
+  objectRef?: string;   // if set to undefined -> assuming current object?
+                        // widget's that are configured by one specific object?
+                        // like a context object.  
 }
 
 /**
@@ -20,7 +23,8 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
   setDefinition = undefined, 
   children = undefined,
   globalPropName,
-  datastream,     //maybe best to set object reference to "managed content" | "reference" | "x" ? like in cirillo?
+  datastream,     
+  //maybe best to set object reference to "managed content" | "reference" | "x" ? like in cirillo?
   // or contextObject with datastream?
   // or service to call
 }) => {
