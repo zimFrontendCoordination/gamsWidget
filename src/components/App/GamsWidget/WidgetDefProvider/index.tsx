@@ -52,7 +52,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
         console.error(err);
       })
     } else {
-      console.warn("GamsWidget- WidgetDefProvider: No global window property nor datastream defined for retrieving the widget's definition. Returning test-data instead.");
+      console.error("GamsWidget- WidgetDefProvider: No global window property nor datastream defined for retrieving the widget's definition. Returning dummy-defintion instead. (But the app might crash).");
     }
 
   }, [setDefinition, globalPropName, datastream]);
