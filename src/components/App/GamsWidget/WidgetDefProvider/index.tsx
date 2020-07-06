@@ -9,7 +9,7 @@ import { WidgetDefProviderProps } from ".."
 interface GAMSWidgetDefProps extends WidgetDefProviderProps {
   globalPropName?: string;
   datastream?: string;
-  objectRef?: string;   // if set to undefined -> assuming current object?
+  objectPidRef?: string;   // if set to undefined -> assuming current object? via datastream?
                         // widget's that are configured by one specific object?
                         // like a context object.  
 }
@@ -27,6 +27,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
   //maybe best to set object reference to "managed content" | "reference" | "x" ? like in cirillo?
   // or contextObject with datastream?
   // or service to call
+  objectPidRef
 }) => {
   React.useEffect(() => {
     if (!setDefinition) return;
@@ -34,12 +35,15 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
     // configured window object validates true
     if(window[globalPropName as any]){
       return setDefinition(window[globalPropName as any]);
-    } else if(datastream) {
+    } 
+    
     // window object not defined
-      // try to fetch for GUI def in datastream
-      let curPid = getCurrentPid();
-      let requestUrl = `${window.location.origin}/archive/objects/${curPid}/datastreams/${datastream}/content`  
-      
+    // try to fetch for GUI def in datastream
+    // first assign PID.
+    let reqPid = objectPidRef ? objectPidRef : getCurrentPid();
+
+    if(datastream){ 
+      let requestUrl = `${window.location.origin}/archive/objects/${reqPid}/datastreams/${datastream}/content`  
       // fetch object's widget datastream
       fetch(requestUrl).then(data => {
         data.text().then(text => {
@@ -49,11 +53,11 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
             //parse xml to JSON via lib best?
           }
         }).catch(err => {
-          console.error("Error stringifying the datastream at: ", requestUrl);
+          console.error("GamsWidget- WidgetDefProvider: Error stringifying the datastream at: ", requestUrl);
           console.error(err);
         });
       }).catch(err => {
-        console.error("Error at getting config data from url: ", requestUrl);
+        console.error("GamsWidget- WidgetDefProvider: Error at getting config data from url: ", requestUrl);
         console.error(err);
       })
     } else {
@@ -62,11 +66,11 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
         name:"Dummy-Test Widget",
         lifecycle:"develop"        
       }
-      console.error("Set dummy definition: ", dummyDef);
+      console.error("GamsWidget- WidgetDefProvider: Set dummy definition: ", dummyDef);
       setDefinition(dummyDef);    
     }
-
-  }, [setDefinition, globalPropName, datastream]);
+    
+  }, [setDefinition, globalPropName, datastream, objectPidRef]);
 
   return children ? children : null;
 };
