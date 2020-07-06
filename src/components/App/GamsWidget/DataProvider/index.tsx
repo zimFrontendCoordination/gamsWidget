@@ -20,8 +20,8 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
         // own method that can be awaited
         
         //@ts-ignore
-        let reqCount: number = widgetDef.dataSpec.length;
-        let reqCompletedCounter: number = 0;
+        //let reqCount: number = widgetDef.dataSpec.length;
+        //let reqCompletedCounter: number = 0;
         
         //@ts-ignore (is ok although dataSpec must be defined)
         widgetDef.dataSpec.sources.forEach(source => {

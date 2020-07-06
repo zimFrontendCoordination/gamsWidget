@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import GamsWidget from "./GamsWidget"
 import WidgetDefProvider from "./GamsWidget/WidgetDefProvider"
 import DataProvider from "./GamsWidget/DataProvider"
