@@ -55,7 +55,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
       fetch(requestUrl).then(data => {
         data.text().then(text => {
           try {
-            console.debug("GamsWidget-WidgetDefinitionProvider: No window-object definition provided. Defaulted to requesting current object's datastream: ", datastream);
+            console.debug("GamsWidget-WidgetDefinitionProvider: No window-object definition provided. Defaulted to requesting current object's datastream at url: ", requestUrl);
             setDefinition(JSON.parse(text));
           } catch(e){
             //parse xml to JSON via lib best?
