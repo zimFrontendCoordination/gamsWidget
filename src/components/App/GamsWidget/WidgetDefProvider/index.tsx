@@ -1,5 +1,5 @@
 import React from "react";
-import { getCurrentPid } from "../../../../utils/gamsUtils";
+import { getCurrentPid, getProjectAbbr } from "../../../../utils/gamsUtils";
 import { GamsWidgetType } from "../index"
 import { WidgetDefProviderProps } from ".."
 
@@ -45,9 +45,9 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
     // try to fetch for GUI def in datastream
     // first assign PID.
 
-    // TODO get current project context -> then set to something else 
-
-    let reqPid = objectPidRef ? objectPidRef : getCurrentPid();
+    // when ne objectPidRef is set to context assign
+    // the context pid
+    let reqPid = (objectPidRef === "context") ? `context:${getProjectAbbr()}` : getCurrentPid();
 
     if(datastream){ 
       let requestUrl = `${window.location.origin}/archive/objects/${reqPid}/datastreams/${datastream}/content`  
