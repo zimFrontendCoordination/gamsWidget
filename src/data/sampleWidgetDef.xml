@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+  <gamsWidget>
+    <!--
+    Apply additional features in the different lifecycle scenarios
+    like schema validation / give hints how to correctly apply /
+    hint that you are in "development" mode.
+    e.g. "Given datastream is XML format - the client side parsing to JSON lowers performance,
+    consider providing directly JSON as source."
+    e.g. "toggableSideBar in applied in DEVELOP mode..."
+    --> 
+    <lifecycle>develop</lifecycle> <!-- build, deploy, develop -->
+    
+    <!--
+    Specify which widget should be applied
+    -->
+    <name>Mobile Explorer</name>  <!-- toggableSideBar | backUpButton -->
+
+    <!--  
+    Description of widget (what it should do) 
+    (not necessarily provided here?)
+    -->
+    <description></description>
+
+    <!--
+    Intention of widget
+    e.g. provide a sidebar with GAMS related standard REST functionalities
+    like switching the language via the REST-Pathvariable "locale".
+    -->
+    <intent></intent>
+
+    <!--
+    GUI spec based in XUL or XAML or else??
+    - Configuration comes always from the current PID! (and datastream) - and must be given by gamsJS
+    - or: schemaless, individual definitions?
+    - maybe best to let completely free??
+    - css is specified outside - what is with custom html? 
+    -->
+    <gui>
+      
+      <!-- 
+        ATM specific MobileExplorer elements in here
+      -->
+      <tileLayerSrc>https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png</tileLayerSrc>
+      <startZoom>7</startZoom>     
+      <startView>
+        <coord>47.41547</coord>
+        <coord>15.205683</coord>
+      </startView>
+    </gui>
+    
+    <!--
+      Spec of where the data resides, like 
+      for mobileExplorer (GML - Object?)
+      - standards like geojson could be applied directly here? 
+        ()
+      (GUI - definitions / config is provided inside <gui>)
+      - dataModel decided in each widget!
+    -->
+    <dataSourcesSpec>
+      <!--
+        Defines where the data should be get from?
+        e.g. directly from here or via ajax?
+      -->
+      <sources>
+        <source>
+          <gamsDigitalObj>
+            <!-- Handles different behaviors in different content models -->
+            <contentModel></contentModel>   <!-- Required!  -->
+            
+            <!-- 
+              Following elements are optional
+            -->
+            <pid></pid>                     <!-- not defined - current pid -->
+            <datastream></datastream>       <!-- not defined - defaulting to standard service of content model (if service not defined) -->
+            <service></service>             <!-- not defined - defaulting to standard service of content model (if datastream not defined) -->
+          </gamsDigitalObj>
+          
+          <!-- 
+            For requesting external apis
+          -->
+          <api>
+            <url></url>
+          </api>
+
+          <!-- 
+            Name of global window property which's value should be processed as widget data. 
+          -->
+          <global>
+            <propertyName></propertyName>
+          </global>
+
+        </source>  
+      </sources> 
+    </dataSourcesSpec>
+
+
+    <!-- 
+      Optional place where the data should be 
+      anything allowed.
+    -->
+    <data></data>
+
+  </gamsWidget>
+</xml>
