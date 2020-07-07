@@ -75,3 +75,13 @@ export const setRestParam = (paramName: string, value: string): void => {
   url.searchParams.set(paramName, value);
   window.location.href = url.href;
 }
+
+/**
+ * Uses JSON.parse and JSON.stringify to generate 
+ * a deep copy of given value.
+ * @param {Object | Array<any>} value Object or Array to copy deep.
+ * @returns {Object | Array<any>} deep copy of given Object or Array.
+ */
+export const copyDeep = (value: Object | Array<any>) => {
+  return JSON.parse(JSON.stringify(value));
+}
