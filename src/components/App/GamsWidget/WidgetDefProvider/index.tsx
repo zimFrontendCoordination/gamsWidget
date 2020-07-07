@@ -9,7 +9,7 @@ import { WidgetDefProviderProps } from ".."
 interface GAMSWidgetDefProps extends WidgetDefProviderProps {
   globalPropName?: string;
   datastream?: string;
-  objectPidRef?: string;   // if set to undefined -> assuming current object? via datastream?
+  objectPidRef?: "context";   // if set to undefined -> assuming current object? via datastream?
                            // widget's that are configured by one specific object?
                            // like a context object.  
 }
@@ -44,6 +44,9 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
     // window object not defined
     // try to fetch for GUI def in datastream
     // first assign PID.
+
+    // TODO get current project context -> then set to something else 
+
     let reqPid = objectPidRef ? objectPidRef : getCurrentPid();
 
     if(datastream){ 
