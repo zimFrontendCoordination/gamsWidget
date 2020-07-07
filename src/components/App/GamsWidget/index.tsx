@@ -117,10 +117,18 @@ export interface GamsWidgetType {
     // for flexibility reasons type is specified inside sources BUT:
     // all sources must be of same type atm.
     // otherwise the data merging process would be difficult.
+    // data needs to be guaranteed of same type -> otherwise crash! 
     sources: {
-        type: "api" | "local" | "gamsGMLObject" | "gamsTEIObject" | "gamsQueryObject";
-        pid?: string;
-        url?: string;
+        gamsDigitalObj?: {
+          pid: string | "current";
+          contentModel: "TEI" | "GML" | "Query" | "Context" | "R" | "LIDO" | "Ontology" | "SKOS"
+        };
+        api?: {
+          url:string;
+        };
+        global?: {
+          propertyName?: string
+        }
       }[]
   };
   
