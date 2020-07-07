@@ -125,8 +125,12 @@ export interface GamsWidgetType {
 
 
 export interface GamsWidgetDataSource {
-  gamsDigitalObj?: {
-    pid: string | "current";
+  // best default would be to call current pid and service! 
+  // (but difficult -> cannot know current content model)
+  gamsDigitalObj?: {      
+    pid?: string;         // defaults undefined -> assume that current pid should be requested.
+    datastream?: string;  // defaults undefined -> assuming service to call. (and not a datstream of the object)
+    service?: string;     //                    -> ignored by standard
     contentModel: "TEI" | "GML" | "Query" | "Context" | "R" | "LIDO" | "Ontology" | "SKOS"
   };
   api?: {
