@@ -85,3 +85,25 @@ export const setRestParam = (paramName: string, value: string): void => {
 export const copyDeep = (value: Object | Array<any>) => {
   return JSON.parse(JSON.stringify(value));
 }
+
+
+/**
+ * Uses getCurrentPid() to retrieve client's current visibile project abbreviation.
+ * e.g. o:derla.vor will return "derla" OR o:cantus.regensburg will return "cantus".
+ * @param curPid Client's current visible pid to analyze. Reads out current project's pid
+ * by default.
+ * @returns client's visible project abbreviation in the url.
+ */
+export const getProjectAbbr = (curPid = getCurrentPid()) => {
+  let abbr = "";
+  let doublePointIndex = curPid.indexOf(":");
+  abbr = curPid.slice(doublePointIndex + 1, curPid.length); 
+
+  let pointIndex = abbr.indexOf(".");
+
+  if(pointIndex===-1){
+    return abbr
+  } else {
+    return abbr.slice(0, pointIndex);
+  };
+}
