@@ -1,5 +1,5 @@
 import React from "react";
-import { WidgetDataProviderProps } from "..";
+import { WidgetDataProviderProps, GamsWidgetDataSource } from "..";
 
 
 const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetData }) => {
@@ -10,7 +10,7 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
 
     // when no dataSpec -> assuming none necessary.
     //@ts-ignore
-    if(widgetDef.dataSpec){
+    if(widgetDef.dataSourcesSpec){
       //fetch data according to dataSpec
       if(lifecycle === "develop") console.debug("GamsWidget-DataProvider: Data provided for the widget: ", widgetDef);
 
@@ -24,7 +24,7 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
         //let reqCompletedCounter: number = 0;
         
         //@ts-ignore (is ok although dataSpec must be defined)
-        widgetDef.dataSpec.sources.forEach(source => {
+        widgetDef.dataSourcesSpec.sources.forEach(source => {
           
 
 
@@ -36,7 +36,18 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
       })();
 
 
+      //TODO -> loop over all data specs.
+      //atm take only first data spec into account
+      let dataSource = widgetDef.dataSourcesSpec.sources[0];
+      if(!checkDataSource(dataSource))return console.error("GamsWidget-DataProvider: Validation of data source object failed. Aborting operations: ", dataSource);
       
+      if(dataSource.gamsDigitalObj){
+
+        
+
+      } 
+
+
 
 
 
@@ -51,3 +62,25 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
 }
 
 export default DataProvider;
+
+
+
+
+/**
+ * Checks if exactly one property of given GamsWidgetDataSource object is defined.
+ *@param dataSource GamsWidgetDataSource object to be validated. 
+ *@returns True if exactly one property is defined. False if none or multiple are defined.
+ */
+const checkDataSource = (dataSource: GamsWidgetDataSource): boolean => {
+  let definedProps = Object.values(dataSource).filter(val => val ? val : false);
+  if(definedProps.length === 1){
+    console.info("GamsWidget-DataProvider: Validation of Datasource successfull: ", dataSource);
+    return true;
+  } else if(definedProps.length === 0){
+    console.error("GamsWidget-DataProvider: All properties of given DataSource validated false. Please make sure to assign one correct property to the given datasource object: ", dataSource);
+    return false;
+  } else {
+    console.error("GamsWidget-DataProvider: More than one property is defined in given datasource. Make sure to define only one: ", dataSource);
+    return false;
+  }  
+}
