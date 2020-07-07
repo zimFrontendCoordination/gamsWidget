@@ -44,11 +44,15 @@ interface Props {
  * @param WidgetDataProvider Component that handles the "request" / "get" for the Widget's data.
  */
 const GamsWidget: React.FC<Props> = ({ WidgetComponent, WidgetDefProvider, WidgetDataProvider }) => {
+  //initial widgetDef state -> set via Definition Provider 
   const [widgetDef, setWidgetDef] = React.useState<GamsWidgetType | undefined>(
     undefined
   );
 
-  const [widgetDataSet, setWidgetDataSet] = React.useState<boolean>(false);
+  // complete merged widget state (with data) -> set by the Data provider
+  const [refinedWidgetData, setRefinedWidgetData] = React.useState<GamsWidgetType | undefined>(
+    undefined
+  );
 
   React.useEffect(()=>{
     if(!widgetDef)return;
@@ -61,31 +65,14 @@ const GamsWidget: React.FC<Props> = ({ WidgetComponent, WidgetDefProvider, Widge
     }
   }, [widgetDef])
 
-  /**
-   * Allows setting state of the widgetDef AND
-   * to mark if data-processing was done. Passed
-   * down to the Data-Provider as memorized useCallback. (down below)
-   */
-  const setWidgetData = (widgetDef: GamsWidgetType) => {
-    setWidgetDataSet(true);
-    setWidgetDef(widgetDef);
-  }
-
-  /**
-   * 
-   */
-  const memoSetWidgetdata = React.useCallback(widgetDef => {
-    setWidgetData(widgetDef)
-  }, []);
-
   return (
     <>
       <WidgetDefProvider.Component
         {...WidgetDefProvider.props}
         setDefinition={setWidgetDef}
       />
-      {widgetDef ? <WidgetDataProvider.Component widgetDef={widgetDef} setWidgetData={memoSetWidgetdata} {...WidgetDataProvider.props}/> : null}
-      {widgetDef && widgetDataSet ? <WidgetComponent.Component widgetDef={widgetDef} {...WidgetComponent.props} /> : null}
+      {widgetDef ? <WidgetDataProvider.Component widgetDef={widgetDef} setWidgetData={setRefinedWidgetData} {...WidgetDataProvider.props}/> : null}
+      {refinedWidgetData ? <WidgetComponent.Component widgetDef={refinedWidgetData} {...WidgetComponent.props} /> : null}
     </>
   );
 };
