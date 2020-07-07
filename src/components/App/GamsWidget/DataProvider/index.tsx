@@ -43,7 +43,7 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
       
       if(dataSource.gamsDigitalObj){
 
-        
+
 
       } 
 
@@ -72,6 +72,7 @@ export default DataProvider;
  *@returns True if exactly one property is defined. False if none or multiple are defined.
  */
 const checkDataSource = (dataSource: GamsWidgetDataSource): boolean => {
+  // adds all properties validated to true to the array.
   let definedProps = Object.values(dataSource).filter(val => val ? val : false);
   if(definedProps.length === 1){
     console.info("GamsWidget-DataProvider: Validation of Datasource successfull: ", dataSource);
