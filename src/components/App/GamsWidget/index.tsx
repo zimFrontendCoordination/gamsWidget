@@ -59,7 +59,10 @@ const GamsWidget: React.FC<Props> = ({ WidgetComponent, WidgetDefProvider, Widge
 
     // message according to set lifecycle etc.
     if(widgetDef.lifecycle){
-      if((widgetDef.lifecycle === "develop") || (widgetDef.lifecycle === "production"))console.debug("GamsWidget: WidgetDefinition's lifecycle was configured as:'", widgetDef.lifecycle, "' Set the lifecycle to 'deploy' if you want to remove the console messages.");
+      if((widgetDef.lifecycle === "develop") || (widgetDef.lifecycle === "production")){
+        console.debug("GamsWidget: Original widget-definition was set to (by either window object or requesting the related datastream): ", widgetDef);
+        console.debug("GamsWidget: WidgetDefinition's lifecycle was configured as:'", widgetDef.lifecycle, "' Set the lifecycle to 'deploy' if you want to remove the console messages.")
+      }
     } else {
       console.debug("GamsWidget: WidgetDefinition's lifecycle not set. Defaulting to:'develop'. Set the lifecycle to 'deploy' if you want to remove the console messages.");
     }
