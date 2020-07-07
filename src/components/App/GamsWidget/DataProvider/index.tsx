@@ -1,5 +1,6 @@
 import React from "react";
 import { WidgetDataProviderProps, GamsWidgetDataSource } from "..";
+import { getCurrentPid } from "../../../../utils/gamsUtils";
 
 
 const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetData }) => {
@@ -36,18 +37,64 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
       })();
 
 
-      //TODO -> loop over all data specs.
+      //TODO -> loop over all data specs. (not only the first)
+      //TODO -> currently only supports json!
       //atm take only first data spec into account
       let dataSource = widgetDef.dataSourcesSpec.sources[0];
       if(!checkDataSource(dataSource))return console.error("GamsWidget-DataProvider: Validation of data source object failed. Aborting operations: ", dataSource);
       
+      
+      //when dataSource is a digital object.
+      //following code clause build the correct "request url"
       if(dataSource.gamsDigitalObj){
 
-        
+        // build "first part" of url first according to pid definition.
+        let pid = dataSource.gamsDigitalObj.pid ? dataSource.gamsDigitalObj.pid : getCurrentPid();
+        let reqUrlStart = `${window.location.origin}/archive/objects/${pid}`;
+        let reqUrlFull = '';
+
+        // both defined doesn't make any sense.
+        if(dataSource.gamsDigitalObj.datastream && dataSource.gamsDigitalObj.service)return console.error("GamsWidget-DataProvider: Got a dataSource object where both a datastream and a service is defined. Please make sure to define either one: ", dataSource);
+
+        //first case of datastreams (same in every case)
+        if(dataSource.gamsDigitalObj.datastream){
+          reqUrlFull = reqUrlStart + `/datastreams/${dataSource.gamsDigitalObj.datastream}/content`;
+
+          // case of service should be called.
+        } else {
+          
+          // call standard service or specified one specific for content model
+          switch(dataSource.gamsDigitalObj.contentModel){
+            case "GML":
+              reqUrlFull = reqUrlStart + `/methods/sdef:GML/${dataSource.gamsDigitalObj.service ? dataSource.gamsDigitalObj.service : "getJSON"}`;
+              break;
+            case "TEI":
+              reqUrlFull = reqUrlStart + `/methods/sdef:TEI/${dataSource.gamsDigitalObj.service ? dataSource.gamsDigitalObj.service : "get"}`;
+              break;
+            case "Context":
+              reqUrlFull = reqUrlStart + `/methods/sdef:Context/${dataSource.gamsDigitalObj.service ? dataSource.gamsDigitalObj.service : "get"}`;
+              break;
+            case "Query":
+              reqUrlFull = reqUrlStart + `/methods/sdef:Query/${dataSource.gamsDigitalObj.service ? dataSource.gamsDigitalObj.service : "getJSON"}`;
+              break;
+            default:
+              return console.error("GamsWidget-DataProvider: Unsupported-ContentModel-Error at building the request url for specified content model: ", dataSource.gamsDigitalObj.contentModel, dataSource);
+          }
+
+        }
+
+        // when request url correctly built for gamsObject -> start fetch.
+        fetch(reqUrlFull).then(resp => {
+          resp.json().then(json => {
+            setWidgetData(json);
+          }).catch(err => {
+            console.error("GamsWidget-DataProvider: Error parsing data as JSON from datasource: ", dataSource);
+            console.error(err);
+          });
+          
+        });
 
       } 
-
-
 
 
 
