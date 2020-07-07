@@ -44,39 +44,29 @@ interface Props {
  * @param WidgetDataProvider Component that handles the "request" / "get" for the Widget's data.
  */
 const GamsWidget: React.FC<Props> = ({ WidgetComponent, WidgetDefProvider, WidgetDataProvider }) => {
+  //initial widgetDef state -> set via Definition Provider 
   const [widgetDef, setWidgetDef] = React.useState<GamsWidgetType | undefined>(
     undefined
   );
 
-  const [widgetDataSet, setWidgetDataSet] = React.useState<boolean>(false);
+  // complete merged widget state (with data) -> set by the Data provider
+  const [refinedWidgetData, setRefinedWidgetData] = React.useState<GamsWidgetType | undefined>(
+    undefined
+  );
 
   React.useEffect(()=>{
     if(!widgetDef)return;
 
     // message according to set lifecycle etc.
     if(widgetDef.lifecycle){
-      if((widgetDef.lifecycle === "develop") || (widgetDef.lifecycle === "production"))console.debug("GamsWidget: WidgetDefinition's lifecycle was configured as:'", widgetDef.lifecycle, "' Set the lifecycle to 'deploy' if you want to remove the console messages.");
+      if((widgetDef.lifecycle === "develop") || (widgetDef.lifecycle === "production")){
+        console.debug("GamsWidget: Original widget-definition was set to (by either window object or requesting the related datastream): ", widgetDef);
+        console.debug("GamsWidget: WidgetDefinition's lifecycle was configured as:'", widgetDef.lifecycle, "' Set the lifecycle to 'deploy' if you want to remove the console messages.")
+      }
     } else {
       console.debug("GamsWidget: WidgetDefinition's lifecycle not set. Defaulting to:'develop'. Set the lifecycle to 'deploy' if you want to remove the console messages.");
     }
   }, [widgetDef])
-
-  /**
-   * Allows setting state of the widgetDef AND
-   * to mark if data-processing was done. Passed
-   * down to the Data-Provider as memorized useCallback. (down below)
-   */
-  const setWidgetData = (widgetDef: GamsWidgetType) => {
-    setWidgetDataSet(true);
-    setWidgetDef(widgetDef);
-  }
-
-  /**
-   * 
-   */
-  const memoSetWidgetdata = React.useCallback(widgetDef => {
-    setWidgetData(widgetDef)
-  }, []);
 
   return (
     <>
@@ -84,8 +74,8 @@ const GamsWidget: React.FC<Props> = ({ WidgetComponent, WidgetDefProvider, Widge
         {...WidgetDefProvider.props}
         setDefinition={setWidgetDef}
       />
-      {widgetDef ? <WidgetDataProvider.Component widgetDef={widgetDef} setWidgetData={memoSetWidgetdata} {...WidgetDataProvider.props}/> : null}
-      {widgetDef && widgetDataSet ? <WidgetComponent.Component widgetDef={widgetDef} {...WidgetComponent.props} /> : null}
+      {widgetDef ? <WidgetDataProvider.Component widgetDef={widgetDef} setWidgetData={setRefinedWidgetData} {...WidgetDataProvider.props}/> : null}
+      {refinedWidgetData ? <WidgetComponent.Component widgetDef={refinedWidgetData} {...WidgetComponent.props} /> : null}
     </>
   );
 };
@@ -125,8 +115,12 @@ export interface GamsWidgetType {
 
 
 export interface GamsWidgetDataSource {
-  gamsDigitalObj?: {
-    pid: string | "current";
+  // best default would be to call current pid and service! 
+  // (but difficult -> cannot know current content model)
+  gamsDigitalObj?: {      
+    pid?: string;         // defaults undefined -> assume that current pid should be requested.
+    datastream?: string;  // defaults undefined -> assuming service to call. (and not a datstream of the object)
+    service?: string;     //                    -> ignored by standard
     contentModel: "TEI" | "GML" | "Query" | "Context" | "R" | "LIDO" | "Ontology" | "SKOS"
   };
   api?: {

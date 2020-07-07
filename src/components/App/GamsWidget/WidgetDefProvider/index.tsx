@@ -52,6 +52,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
       fetch(requestUrl).then(data => {
         data.text().then(text => {
           try {
+            console.debug("GamsWidget-WidgetDefinitionProvider: No window-object definition provided. Defaulted to requesting current object's datastream: ", datastream);
             setDefinition(JSON.parse(text));
           } catch(e){
             //parse xml to JSON via lib best?
@@ -61,7 +62,7 @@ const WidgetDefProvider: React.FC<GAMSWidgetDefProps> = ({
           console.error(err);
         });
       }).catch(err => {
-        console.error("GamsWidget- WidgetDefProvider: Error at getting config data from url: ", requestUrl);
+        console.error("GamsWidget- WidgetDefProvider: Error at getting widget definition from url: ", requestUrl);
         console.error(err);
       })
     } else {
