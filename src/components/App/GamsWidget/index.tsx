@@ -118,18 +118,21 @@ export interface GamsWidgetType {
     // all sources must be of same type atm.
     // otherwise the data merging process would be difficult.
     // data needs to be guaranteed of same type -> otherwise crash! 
-    sources: {
-        gamsDigitalObj?: {
-          pid: string | "current";
-          contentModel: "TEI" | "GML" | "Query" | "Context" | "R" | "LIDO" | "Ontology" | "SKOS"
-        };
-        api?: {
-          url:string;
-        };
-        global?: {
-          propertyName?: string
-        }
-      }[]
+    sources: GamsWidgetDataSource[]
   };
   
+}
+
+
+export interface GamsWidgetDataSource {
+  gamsDigitalObj?: {
+    pid: string | "current";
+    contentModel: "TEI" | "GML" | "Query" | "Context" | "R" | "LIDO" | "Ontology" | "SKOS"
+  };
+  api?: {
+    url:string;
+  };
+  global?: {
+    propertyName?: string
+  }
 }
