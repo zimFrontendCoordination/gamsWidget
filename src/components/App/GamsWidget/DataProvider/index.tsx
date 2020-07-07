@@ -1,6 +1,6 @@
 import React from "react";
-import { WidgetDataProviderProps, GamsWidgetDataSource } from "..";
-import { getCurrentPid } from "../../../../utils/gamsUtils";
+import { WidgetDataProviderProps, GamsWidgetDataSource, GamsWidgetType } from "..";
+import { getCurrentPid, copyDeep } from "../../../../utils/gamsUtils";
 
 
 const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetData }) => {
@@ -13,7 +13,7 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
     //@ts-ignore
     if(widgetDef.dataSourcesSpec){
       //fetch data according to dataSpec
-      if(lifecycle === "develop") console.debug("GamsWidget-DataProvider: Data provided for the widget: ", widgetDef);
+      if(lifecycle === "develop") console.debug("GamsWidget-DataProvider: dataSourceSpecification provided for the widget: ", widgetDef);
 
       //async IIFE to await + load + merge of data when multiples
       (async () => {
@@ -84,14 +84,21 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
         }
 
         // when request url correctly built for gamsObject -> start fetch.
+        if(lifecycle === "develop") console.debug("GamsWidget-DataProvider: Sending request for widget data to the dataspecification to: ", reqUrlFull);
         fetch(reqUrlFull).then(resp => {
           resp.json().then(json => {
-            setWidgetData(json);
+            let widgetDefCopy: GamsWidgetType = copyDeep(widgetDef);
+            widgetDefCopy.data = json;
+            if(lifecycle === "develop") console.debug("GamsWidget-DataProvider: Succesfully got data - setting now data property of widget definition. Got data: ", json);
+            setWidgetData(widgetDefCopy);
           }).catch(err => {
             console.error("GamsWidget-DataProvider: Error parsing data as JSON from datasource: ", dataSource);
             console.error(err);
           });
           
+        }).catch(err => {
+            console.error("GamsWidget-DataProvider: Error getting data from url: ", reqUrlFull);
+            console.error(err);
         });
 
       } 
@@ -100,7 +107,7 @@ const DataProvider: React.FC<WidgetDataProviderProps> = ({ widgetDef, setWidgetD
 
     } else {
       if(lifecycle === "develop") console.debug("GamsWidget-DataProvider: No data provided for the widget - Assuming not needed for widget definition: ", widgetDef);
-      setWidgetData(widgetDef);
+      setWidgetData(copyDeep(widgetDef));
     }
   }, [ widgetDef, setWidgetData ]);
 
