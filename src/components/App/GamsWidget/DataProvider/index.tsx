@@ -139,3 +139,32 @@ const checkDataSource = (dataSource: GamsWidgetDataSource): boolean => {
     return false;
   }  
 }
+
+
+
+export const harvestFeatures = (
+  urls: string[],
+): Object => {
+  if (urls.length === 0)
+    throw new RangeError(
+      "Only arrays greater than length 0 are valid for the harvestPersons function."
+    );
+
+  // array of Promises
+  // fetch and parse as json
+  let respsPromises = urls.map(url => fetch("url").then(resp => resp.json())); 
+
+  // resolve all promises
+  // coming from 
+  Promise.all(respsPromises).then(values => {
+
+    //merge array of json objects to one -> difficult if datatype is not known!
+    //best to merge on feature level?
+
+
+  }).catch(err => console.error(err));
+
+
+  return respsPromises
+  
+};
