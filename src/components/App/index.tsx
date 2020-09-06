@@ -7,10 +7,16 @@ import ExampleWidget from "./GamsWidget/ExampleWidget";
 const App: React.FC = () => {
 
   return <GamsWidget
-    WidgetComponent={{Component: ExampleWidget, props:{exampleProp:" This exampleProp is injected to the <ExampleWidget> from <App>"}}}
-    WidgetDefProvider={{Component:WidgetDefProvider}}
-    WidgetDataProvider={{Component: DataProvider}}
-  ></GamsWidget>
+    /**
+     * Optionally pass down own custom DataProvider + WdigetDefPRovider impls.  
+     */
+    //WidgetDefProvider={{Component:WidgetDefProvider}}
+    //WidgetDataProvider={{Component: DataProvider}}
+    datastream="MY_WIDGET_DATASTREAM"
+    globalPropName="__MY_EXAMPLE_WIDGET"
+  >
+    <ExampleWidget/>
+  </GamsWidget>
 
 }
 

@@ -5,13 +5,21 @@ import { GamsWidgetType, GAMSWidgetProps } from "../index"
 //2. and provide the "widgetDef" property of GamsWidgetType
 // (that can also be extended)
 interface Props extends GAMSWidgetProps {
-  widgetDef: GamsWidgetType,
+  widgetDef?: GamsWidgetType,
   exampleProp?: string
 }
 
-const Example:React.FC<Props> = ({widgetDef, exampleProp}) => {
+/**
+ * Take a look at public/index.html for global defined widget variable.
+ */
+const Example:React.FC<Props> = ({widgetDef}) => {
 
-  return <p>{ exampleProp ? exampleProp : "no widget name provided" }</p>
+  return widgetDef ? (
+    <>
+      <p>Given name for widget: {widgetDef.name}</p>
+      <p>Given description for widget: {widgetDef.description}</p>
+    </>
+  ) : null
 
 }
 
